@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
 const morgan = require('morgan');
 const userHandler = require('./router/userHandler')
 

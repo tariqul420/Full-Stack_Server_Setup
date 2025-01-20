@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 // collection
-const user = mongoose.connection.collection('users');
+const users = mongoose.connection.collection('users');
 
 // Verify Jwt Token
 const verifyToken = async (req, res, next) => {
@@ -22,7 +22,7 @@ const verifyToken = async (req, res, next) => {
 const verifyAdmin = async (req, res, next) => {
     const email = req?.user?.email;
     const query = { email };
-    const user = await user.findOne(query);
+    const user = await users.findOne(query);
     const isAdmin = user?.role === 'admin';
 
     if (!user || !isAdmin) {
