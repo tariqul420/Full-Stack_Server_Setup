@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const userSchema = require('../schemas/userSchema')
 const router = express.Router();
+const { verifyToken } = require('../middleware/middleware')
 
 const User = new mongoose.model('User', userSchema);
 
@@ -53,7 +54,7 @@ router.post('/', async (req, res) => {
 });
 
 // update a user
-router.patch('/:email', async (req, res) => {
+router.patch('/:email', verifyToken, async (req, res) => {
     try {
         const email = req.params.email
         const updatedUser = req.body

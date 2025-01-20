@@ -26,16 +26,43 @@ mongoose.connect(`mongodb://localhost:27017/Name`)
     .then(() => console.log("☘️  connection successful"))
     .catch((err) => console.log(err));
 
+// create a jwt token
+app.post('/jwt', async (req, res) => {
+    try {
+        const userInfo = req.body
+        const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' })
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        }).send({ success: true })
+    } catch (err) {
+        res.status(500).send({
+            error: 'There was a server-side error',
+            details: err.message
+        });
+    }
+})
+
+// create a jwt token
+app.get('/logout', async (req, res) => {
+    try {
+        res.clearCookie('kutto_Token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            path: '/',
+        }).send({ success: true });
+    } catch (err) {
+        res.status(500).send({
+            error: 'There was a server-side error',
+            details: err.message
+        });
+    }
+})
+
 // application routes
 app.use('/user', userHandler)
-
-// default error handler
-function errorHandler(err, req, res, next) {
-    if (res.headersSent) {
-        return next(err);
-    }
-    res.status(500).json({ error: err });
-}
 
 // default route
 app.get('/', (req, res) => {
